@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+import matplotlib
 import numpy as np
 # import lmfit
 import pandas as pd
@@ -26,15 +27,46 @@ def main():
     
     
     days = np.array(data["Days"])
+
     orps = {
-    0: np.array(data["0"]),
-    1: np.array(data["1"]),
-    2: np.array(data["2"]),
-    5: np.array(data["5"]),
-    10: np.array(data["10"]),
-    20: np.array(data["20"])
+        0: np.array(data["0"]),
+        1: np.array(data["1"]),
+        2: np.array(data["2"]),
+        5: np.array(data["5"]),
+        10: np.array(data["10"]),
+        20: np.array(data["20"])
     }
+
+    #put for loop here to traverse the data
+       # Plot each ORP condition with its sigmoid estimate
+    plt.figure(figsize=(10, 6))
     
+    for cloride_concentration, orp in orps.items():
+        # Scatter plot of the actual data
+        print(cloride_concentration, orp)
+        plt.scatter(days, orp, label=f"Cl {cloride_concentration} (data)", alpha=0.6)
+        
+    #     # Example sigmoid parameters (can be improved or fitted)
+        c_0 = min(orp)
+        c_1 = max(orp) - c_0
+        k = 0.3  # growth rate
+        t0 = np.median(days)  # midpoint of sigmoid
+        
+        # Generate sigmoid values
+        x_vals = np.linspace(min(days), max(days), 200)
+        y_vals = sigmoid(x_vals, c_0, c_1, k, t0)
+        
+        # Plot sigmoid curve
+        plt.plot(x_vals, y_vals, linestyle='--', label=f"ORP {cloride_concentration} (sigmoid fit)")
+
+    plt.xlabel("Days")
+    plt.ylabel("Orp")
+    plt.title("Bacterial Growth Over Time at Different ORP Levels")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
     # x = []
     # y = []
     # for row in data:
