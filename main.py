@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
-import lmfit
+# import lmfit
 import pandas as pd
 
 
@@ -24,12 +24,17 @@ def main():
     if data is None:
         return
     
-    print(data["Days"])
     
-    days=np.array(data["Days"])
-    orp_0=np.array(data["0"])  
-    print(days)
-    print(orp_0)
+    days = np.array(data["Days"])
+    orps = {
+    0: np.array(data["0"]),
+    1: np.array(data["1"]),
+    2: np.array(data["2"]),
+    5: np.array(data["5"]),
+    10: np.array(data["10"]),
+    20: np.array(data["20"])
+    }
+    
     # x = []
     # y = []
     # for row in data:
