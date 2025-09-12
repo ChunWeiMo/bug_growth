@@ -41,23 +41,32 @@ def main():
        # Plot each ORP condition with its sigmoid estimate
     plt.figure(figsize=(10, 6))
     
-    for cloride_concentration, orp in orps.items():
-        # Scatter plot of the actual data
-        print(cloride_concentration, orp)
-        plt.scatter(days, orp, label=f"Cl {cloride_concentration} (data)", alpha=0.6)
-        
-    #     # Example sigmoid parameters (can be improved or fitted)
-        c_0 = min(orp)
-        c_1 = max(orp) - c_0
-        k = 0.3  # growth rate
-        t0 = np.median(days)  # midpoint of sigmoid
-        
-        # Generate sigmoid values
-        x_vals = np.linspace(min(days), max(days), 200)
+    plt.scatter(days, orps[0], label=f"Cl {"cl = 0"} (data)", alpha=0.6)
+    
+    # Example sigmoid parameters (can be improved or fitted)
+    c_0 = min(orps[0])
+    c_1 = max(orps[0]) - c_0
+    
+    k_s = np.linspace(0.1, 0.3, 5)
+    t0_init = np.median(days)  # midpoint of sigmoid
+    print(t0_init)
+    delta_t0_s= np.linspace(-10, -1, 5)
+    t0_s = t0_init + delta_t0_s
+    # t0 = t0_init - 4
+    # Generate sigmoid values
+    x_vals = np.linspace(min(days), max(days), 200)
+    # k = 0.2
+    t0= 10.5
+    for k in k_s:
         y_vals = sigmoid(x_vals, c_0, c_1, k, t0)
-        
-        # Plot sigmoid curve
-        plt.plot(x_vals, y_vals, linestyle='--', label=f"ORP {cloride_concentration} (sigmoid fit)")
+    
+    
+    # for t0 in t0_s:
+    #     y_vals = sigmoid(x_vals, c_0, c_1, k, t0)
+    
+    # Plot sigmoid curve
+        plt.plot(x_vals, y_vals, linestyle=':', label=f"k: {k}")
+        # plt.plot(x_vals, y_vals, linestyle=':', label=f"t0: {t0}")
 
     plt.xlabel("Days")
     plt.ylabel("Orp")
@@ -66,32 +75,6 @@ def main():
     plt.grid(True)
     plt.tight_layout()
     plt.show()
-
-    # x = []
-    # y = []
-    # for row in data:
-    #     x.append(row[0])
-    #     y.append(row[1])
-    # print(x)
-    # print(y)
-    # plt.scatter(x, y)
-    # # plt.show()
-
-    # # a=np.linspace(150,200,5)
-    # a=180
-    # # b = np.linspace(1,5,5)
-    # b = 3
-    # # c = 0.5
-    # c = 0.2
-    # sigmoid=[]
-
-    # for i in x:
-    #     y= a / (1 + np.exp(b-c*i))+410
-    #     sigmoid.append(y)
-    # print(sigmoid)
-    # plt.plot(x, sigmoid)
-    # # plt.legend()
-    # plt.show()
 
 
 if __name__ == "__main__":
