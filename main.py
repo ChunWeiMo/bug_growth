@@ -1,7 +1,5 @@
 from matplotlib import pyplot as plt
-import matplotlib
 import numpy as np
-# import lmfit
 import pandas as pd
 from scipy.optimize import curve_fit
 import sys
@@ -36,8 +34,9 @@ def fit_sigmoid(days, orps):
         t0 = 10.5
         initial_params = [c_0, c_1, k, t0]
 
-        x_grid = np.linspace(min(days), max(days), 200)
         plt.scatter(days, orp, label=f"Cl {cl}", alpha=0.6)
+        x_grid = np.linspace(min(days), max(days), 200)
+        
         try:
             params, covariance = curve_fit(sigmoid, days, orp, p0=initial_params)
         except Exception as e:
@@ -49,9 +48,10 @@ def fit_sigmoid(days, orps):
             y_fitted = sigmoid(x_grid, c_0_fitted, c_1_fitted, k_fitted, t0_fitted)
             plt.plot(x_grid, y_fitted, label=f"Cl {cl}")
             output_to_json[cl] = params.tolist()
-            
+
     with open("data/fit_params.json", "w") as f:
         json.dump(output_to_json, f)
+
 
 def main():
     experiment_data_path = "data/bug_growth.csv"
