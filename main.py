@@ -4,6 +4,12 @@ import numpy as np
 # import lmfit
 import pandas as pd
 from scipy.optimize import curve_fit
+import sys
+
+
+def exit_handler(message="Exiting program due to an error"):
+    print(message)
+    sys.exit(1)
 
 
 def sigmoid(t, c_0, c_1, k, t0):
@@ -17,7 +23,7 @@ def load_csv_data(file_path):
         return data
     except Exception as e:
         print(f"Error loading CSV data: {e}")
-        return None
+        exit_handler()
 
 
 def fit_sigmoid(days, orps):
@@ -60,7 +66,7 @@ def main():
     plt.figure(figsize=(10, 6))
 
     plt.scatter(days, orps[0], label=f"Cl (data)", alpha=0.6)
-    
+
     params, x_fitted, y_fitted = fit_sigmoid(days, orps)
     plt.plot(x_fitted, y_fitted, label=f"Cl (fit)", color='blue')
     plt.xlabel("Days")
