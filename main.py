@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 import sys
+import json
 
 
 def exit_handler(message="Exiting program due to an error"):
@@ -27,6 +28,7 @@ def load_csv_data(file_path):
 
 
 def fit_sigmoid(days, orps):
+    output_to_json = {}
     for cl, orp in orps.items():
         c_0 = min(orp)
         c_1 = max(orp) - c_0
@@ -42,10 +44,14 @@ def fit_sigmoid(days, orps):
             print(f"Error in curve fitting: {e}")
             exit_handler("Curve fitting failed")
         else:
+            print(params)
             c_0_fitted, c_1_fitted, k_fitted, t0_fitted = params
             y_fitted = sigmoid(x_grid, c_0_fitted, c_1_fitted, k_fitted, t0_fitted)
             plt.plot(x_grid, y_fitted, label=f"Cl {cl}")
-
+            output_to_json[cl] = params.tolist()
+            
+    with open("data/fit_params.json", "w") as f:
+        json.dump(output_to_json, f)
 
 def main():
     experiment_data_path = "data/bug_growth.csv"
