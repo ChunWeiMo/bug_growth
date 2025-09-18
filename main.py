@@ -27,23 +27,24 @@ def load_csv_data(file_path):
 
 
 def fit_sigmoid(days, orps):
-    c_0 = min(orps[0])
-    c_1 = max(orps[0]) - c_0
-    k = 0.2
-    t0 = 10.5
-    initial_params = [c_0, c_1, k, t0]
+    for cl, orp in orps.items():
+        c_0 = min(orp)
+        c_1 = max(orp) - c_0
+        k = 0.2
+        t0 = 10.5
+        initial_params = [c_0, c_1, k, t0]
 
-    x_grid = np.linspace(min(days), max(days), 200)
-    try:
-        params, covariance = curve_fit(sigmoid, days, orps[0], p0=initial_params)
-        c_0_fitted, c_1_fitted, k_fitted, t0_fitted = params
-        y_fitted = sigmoid(x_grid, c_0_fitted, c_1_fitted, k_fitted, t0_fitted)
-        print(params)
-        print(covariance)
-        return params, x_grid, y_fitted
-    except Exception as e:
-        print(f"Error in curve fitting: {e}")
-        return None
+        x_grid = np.linspace(min(days), max(days), 200)
+        plt.scatter(days, orp, label=f"Cl {cl}", alpha=0.6)
+        try:
+            params, covariance = curve_fit(sigmoid, days, orp, p0=initial_params)
+        except Exception as e:
+            print(f"Error in curve fitting: {e}")
+            exit_handler("Curve fitting failed")
+        else:
+            c_0_fitted, c_1_fitted, k_fitted, t0_fitted = params
+            y_fitted = sigmoid(x_grid, c_0_fitted, c_1_fitted, k_fitted, t0_fitted)
+            plt.plot(x_grid, y_fitted, label=f"Cl {cl}")
 
 
 def main():
@@ -65,10 +66,8 @@ def main():
 
     plt.figure(figsize=(10, 6))
 
-    plt.scatter(days, orps[0], label=f"Cl (data)", alpha=0.6)
+    fit_sigmoid(days, orps)
 
-    params, x_fitted, y_fitted = fit_sigmoid(days, orps)
-    plt.plot(x_fitted, y_fitted, label=f"Cl (fit)", color='blue')
     plt.xlabel("Days")
     plt.ylabel("Orp")
     plt.title("Bacterial Growth Over Time at Different ORP Levels")
